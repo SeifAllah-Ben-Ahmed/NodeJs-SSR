@@ -17,11 +17,11 @@ mongoose
   .then(() => console.log('DB Connection successfull'))
   .catch((err) => console.log(err));
 
-//READ JSON FILE
+// READ JSON FILE
 const tours = JSON.parse(
   fs.readFileSync(`${__dirname}/tours-simple.json`, 'utf-8')
 );
-//IMPORT DATA INTO DB
+// IMPORT DATA INTO DB
 const importData = async () => {
   try {
     await Tour.create(tours);
@@ -31,7 +31,7 @@ const importData = async () => {
   }
   process.exit();
 };
-//DELETE ALL DATA FROM COLLECTION
+// DELETE ALL DATA FROM COLLECTION
 const deleteData = async () => {
   try {
     await Tour.deleteMany();
