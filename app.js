@@ -6,12 +6,11 @@ const userRouter = require('./routes/userRoutes');
 const app = express();
 
 // 1) MIDDLEWARES
+if (process.env.NODE_ENV === 'development') {
+  app.use(morgan('dev'));
+}
 app.use(express.json());
-app.use(morgan('dev'));
-app.use((req, res, next) => {
-  console.log('middleware');
-  next();
-});
+app.use(express.static(`${__dirname}/public`));
 
 // 2) ROUTE HANDLERS
 app.use('/api/v1/tours', tourRouter);
