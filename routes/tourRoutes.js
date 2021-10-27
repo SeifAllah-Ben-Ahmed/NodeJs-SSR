@@ -2,7 +2,7 @@ const express = require('express');
 const {
   getAllTours,
   createTour,
-  deletetour,
+  deleteTour,
   updateTour,
   getTour,
   aliasTopTours,
@@ -10,6 +10,7 @@ const {
   getMonthlyPlan,
 } = require('../controllers/tourController');
 const { protect, restrictTo } = require('../controllers/authController');
+const reviewRouter = require('./reviewRoutes');
 
 const router = express.Router();
 
@@ -24,6 +25,9 @@ const router = express.Router();
 // };
 
 // router.param('id', checkId);
+
+router.use('/:tourId/reviews', reviewRouter);
+
 router.route('/top-5-cheap').get(aliasTopTours, getAllTours);
 
 router.route('/tour-stats').get(getTourStats);
@@ -35,6 +39,6 @@ router
   .route('/:id')
   .get(getTour)
   .patch(updateTour)
-  .delete(protect, restrictTo('admin', 'lead-guide'), deletetour);
+  .delete(protect, restrictTo('admin', 'lead-guide'), deleteTour);
 
 module.exports = router;
