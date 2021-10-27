@@ -8,6 +8,7 @@ const hpp = require('hpp');
 
 const tourRouter = require('./routes/tourRoutes');
 const userRouter = require('./routes/userRoutes');
+const reviewRoutes = require('./routes/reviewRoutes');
 const AppError = require('./utils/appError');
 const globalErrorHandler = require('./controllers/errorController');
 
@@ -63,6 +64,7 @@ app.use(express.static(`${__dirname}/public`));
 // 2) ROUTE HANDLERS
 app.use('/api/v1/tours', tourRouter);
 app.use('/api/v1/users', userRouter);
+app.use('/api/v1/reviews', reviewRoutes);
 // Handle 404 not found routes
 app.all('*', (req, res, next) => {
   next(new AppError(`Cant find ${req.originalUrl} on thus server!`, 404));
