@@ -21,23 +21,6 @@ app.set('view engine', 'pug');
 app.set('views', path.join(__dirname, 'views'));
 
 // 1) MIDDLEWARES
-const CSP = 'Content-Security-Policy';
-const POLICY =
-  "default-src 'self' https://*.mapbox.com ;" +
-  "base-uri 'self';block-all-mixed-content;" +
-  "font-src 'self' https: data:;" +
-  "frame-ancestors 'self';" +
-  "img-src http://localhost:3000 'self' blob: data:;" +
-  "object-src 'none';" +
-  "script-src https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js 'self' blob: ;" +
-  "script-src-attr 'none';" +
-  "style-src 'self' https: 'unsafe-inline';" +
-  'upgrade-insecure-requests;';
-
-app.use((req, res, next) => {
-  res.setHeader(CSP, POLICY);
-  next();
-});
 // Serving static files
 app.use(express.static(path.join(__dirname, 'public')));
 
@@ -52,7 +35,12 @@ const limiter = rateLimit({
 });
 
 // Set security HTTP headers
-app.use(helmet());
+app.use(
+  helmet({
+    contentSecurityPolicy: false,
+    referrerPolicy: { policy: 'no-referrer' },
+  })
+);
 
 // Limite request
 app.use('/api', limiter);
@@ -87,10 +75,10 @@ app.use(
 app.use(xss());
 
 // Test middleware
-app.use((req, res, next) => {
-  console.log(req.cookies);
-  next();
-});
+// app.use((req, res, next) => {
+//   console.log(req.cookies);
+//   next();
+// });
 
 // 2) ROUTE HANDLERS
 app.use('/api/v1/tours', tourRouter);

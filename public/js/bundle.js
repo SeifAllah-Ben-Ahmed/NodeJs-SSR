@@ -8782,6 +8782,10 @@ var login = /*#__PURE__*/function () {
             return (0, _axios.default)({
               method: 'POST',
               url: 'http://127.0.0.1:3000/api/v1/users/login',
+              headers: {
+                Accept: 'application/json',
+                'Content-Type': 'application/json'
+              },
               data: {
                 email: email,
                 password: password
@@ -8837,7 +8841,7 @@ var logout = /*#__PURE__*/function () {
 
           case 3:
             res = _context2.sent;
-            if (res.data.status === 'success') location.reload(true);
+            if (res.data.status === 'success') location.assign('/');
             _context2.next = 11;
             break;
 
@@ -8940,6 +8944,10 @@ var updateData = /*#__PURE__*/function () {
             return (0, _axios.default)({
               method: 'PATCH',
               url: url,
+              headers: {
+                Accept: 'application/json',
+                'Content-Type': 'application/json'
+              },
               data: data
             });
 
@@ -9372,7 +9380,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "51010" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "58164" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};

@@ -12,6 +12,10 @@ export const updateData = async (data, type) => {
     const res = await axios({
       method: 'PATCH',
       url,
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+      },
       data,
     });
     if (res.data.status === 'success') {
