@@ -1,4 +1,5 @@
 const express = require('express');
+
 const {
   signup,
   login,
@@ -18,6 +19,8 @@ const {
   updateMe,
   deleteMe,
   getMe,
+  uploadUserPhoto,
+  resizeUserPhoto,
 } = require('../controllers/userController');
 
 const router = express.Router();
@@ -33,7 +36,7 @@ router.use(protect);
 
 router.get('/me', getMe, getUser);
 router.patch('/updateMyPassword', updatePassword);
-router.patch('/updateMe', updateMe);
+router.patch('/updateMe', uploadUserPhoto, resizeUserPhoto, updateMe);
 router.delete('/deleteMe', deleteMe);
 
 // Protect all routes after this middleware
