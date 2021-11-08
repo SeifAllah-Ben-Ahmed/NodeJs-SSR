@@ -1,5 +1,6 @@
 const Tour = require('../models/tourModel');
 const User = require('../models/userModel');
+const Booking = require('../models/bookingModel');
 const AppError = require('../utils/appError');
 const catchAsync = require('../utils/catchAsync');
 
@@ -40,6 +41,28 @@ exports.getAccount = (req, res) => {
     title: 'Your Account',
   });
 };
+
+exports.getMyTours = catchAsync(async (req, res, next) => {
+  // 1) Find all Bookings
+  const bookings = await Booking.find({ user: req.user.id });
+
+  if (!bookings.length) {
+    return res.status(404).render('error', {
+      title: 'Not Found',
+      message: 'There is no booking',
+    });
+    // next(new AppError('There is no booking', 404));
+  }
+  // 2) Find tours with the returned IDs
+  const tourIDs = bookings.map((el) => el.tour);
+  const tours = await Tour.find({ _id: { $in: tourIDs } });
+
+  res.status(200).render('overview', {
+    title: 'My Tours',
+    tours,
+  });
+});
+
 exports.updateUserData = catchAsync(async (req, res, next) => {
   const { name, email } = req.body;
 
