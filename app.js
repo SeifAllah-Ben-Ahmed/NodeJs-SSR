@@ -7,6 +7,7 @@ const mongoSanitier = require('express-mongo-sanitize');
 const xss = require('xss-clean');
 const hpp = require('hpp');
 const cookieParser = require('cookie-parser');
+const compression = require('compression');
 
 const tourRouter = require('./routes/tourRoutes');
 const userRouter = require('./routes/userRoutes');
@@ -80,6 +81,8 @@ app.use(xss());
 //   console.log(req.cookies);
 //   next();
 // });
+
+app.use(compression());
 
 // 2) ROUTE HANDLERS
 app.use('/api/v1/tours', tourRouter);
