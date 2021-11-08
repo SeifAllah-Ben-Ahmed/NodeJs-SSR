@@ -8,10 +8,10 @@ export const login = async (email, password) => {
     const res = await axios({
       method: 'POST',
       url: 'http://127.0.0.1:3000/api/v1/users/login',
-      headers: {
-        Accept: 'application/json',
-        'Content-Type': 'application/json',
-      },
+      // headers: {
+      //   Accept: 'application/json',
+      //   'Content-Type': 'application/json',
+      // },
       data: {
         email,
         password,
