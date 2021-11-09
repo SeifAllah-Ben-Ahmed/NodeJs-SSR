@@ -17,6 +17,7 @@ const viewRoutes = require('./routes/viewRoutes');
 const bookingRoutes = require('./routes/bookingRoutes');
 const AppError = require('./utils/appError');
 const globalErrorHandler = require('./controllers/errorController');
+const { webhookCheckout } = require('./controllers/bookingcontroller');
 
 const app = express();
 app.enable('trust proxy');
@@ -33,6 +34,12 @@ app.use(express.static(path.join(__dirname, 'public')));
 if (process.env.NODE_ENV === 'development') {
   app.use(morgan('dev'));
 }
+// Stripe WebHook chould be called Before bodyParser
+app.post(
+  '/webhook-checkout',
+  express.raw({ type: 'application/json' }),
+  webhookCheckout
+);
 
 const limiter = rateLimit({
   max: 20,
@@ -50,7 +57,6 @@ app.use(
 
 // Limite request
 app.use('/api', limiter);
-
 //Body & Cookie parser, reading data from body
 app.use(
   express.json({
