@@ -24,7 +24,7 @@ exports.getCheckoutSession = catchAsync(async (req, res, next) => {
         name: `${tour.name} Tour`,
         description: tour.summary,
         images: [
-          `https://nodejs-ssr-app.herokuapp.com/tours/${tour.imageCover}`,
+          `https://nodejs-ssr-app.herokuapp.com/img/tours/${tour.imageCover}`,
         ],
         amount: tour.price * 100,
         currency: 'usd',
@@ -58,7 +58,7 @@ exports.webhookCheckout = (req, res, next) => {
   try {
     const signature = req.headers['stripe-signature'];
     event = stripe.webhooks.constructEvent(
-      req.body,
+      req.rawBody,
       signature,
       process.env.STRIPE_SECRET_WEBHOOK
     );
