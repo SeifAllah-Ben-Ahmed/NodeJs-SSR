@@ -10,18 +10,18 @@ const signToken = (id) =>
   jwt.sign({ id }, process.env.JWT_SECRET, {
     expiresIn: process.env.JWT_EXPIRE,
   });
-const createAndSendToken = (user, statusCode, res) => {
+const createAndSendToken = (user, statusCode, req, res) => {
   const token = signToken(user._id);
-  const cookieOption = {
+
+  // if (process.env.NODE_ENV === 'production') cookieOption.secure = true;
+
+  res.cookie('jwt', token, {
     expires: new Date(
       Date.now() + process.env.JWT_COOKIE * 24 * 60 * 60 * 1000
     ),
     httpOnly: true,
-  };
-
-  if (process.env.NODE_ENV === 'production') cookieOption.secure = true;
-
-  res.cookie('jwt', token, cookieOption);
+    secure: req.secure || req.headers('x-forwarded-proto') === 'https',
+  });
   // Remove password
   user.password = undefined;
   res.status(statusCode).json({
@@ -38,7 +38,7 @@ exports.signup = catchAsync(async (req, res, next) => {
   const url = `${req.protocol}://${req.get('host')}/me`;
   await new Email(newUser, url).sendWelcome();
 
-  createAndSendToken(newUser, 201, res);
+  createAndSendToken(newUser, 201, req, res);
 });
 
 exports.login = catchAsync(async (req, res, next) => {
@@ -52,7 +52,7 @@ exports.login = catchAsync(async (req, res, next) => {
   if (!correct || !user) {
     return next(new AppError('Incorrect email or password', 401));
   }
-  createAndSendToken(user, 200, res);
+  createAndSendToken(user, 200, req, res);
 });
 exports.logout = (req, res) => {
   res.cookie('jwt', 'loggedout', {
@@ -168,7 +168,7 @@ exports.resetPassword = catchAsync(async (req, res, next) => {
   await user.save();
   // 3)Update changePasswordAt property for the user
   // 4) log the user in , send JWT
-  createAndSendToken(user, 200, res);
+  createAndSendToken(user, 200, req, res);
 });
 
 exports.updatePassword = catchAsync(async (req, res, next) => {
@@ -185,7 +185,7 @@ exports.updatePassword = catchAsync(async (req, res, next) => {
   user.passwordConfirm = req.body.passwordConfirm;
   await user.save();
   // 4) log userin ,send JWT
-  createAndSendToken(user, 200, res);
+  createAndSendToken(user, 200, req, res);
 });
 
 //Only for rendered pages , no error!
