@@ -35,6 +35,14 @@ if (process.env.NODE_ENV === 'development') {
   app.use(morgan('dev'));
 }
 // Stripe WebHook chould be called Before bodyParser
+app.use((req, res, next) => {
+  if (req.originalUrl === '/webhook') {
+    next();
+  } else {
+    express.json()(req, res, next);
+  }
+});
+
 app.post(
   '/webhook-checkout',
   express.raw({ type: 'application/json' }),
@@ -58,11 +66,11 @@ app.use(
 // Limite request
 app.use('/api', limiter);
 //Body & Cookie parser, reading data from body
-app.use(
-  express.json({
-    limit: '10kb',
-  })
-);
+// app.use(
+//   express.json({
+//     limit: '10kb',
+//   })
+// );
 app.use(express.urlencoded({ extended: true, limit: '10kb' }));
 app.use(cookieParser());
 
