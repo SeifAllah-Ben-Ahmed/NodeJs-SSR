@@ -34,14 +34,6 @@ app.use(express.static(path.join(__dirname, 'public')));
 if (process.env.NODE_ENV === 'development') {
   app.use(morgan('dev'));
 }
-// Use JSON parser for all non-webhook routes
-app.use((req, res, next) => {
-  if (req.originalUrl === '/webhook') {
-    next();
-  } else {
-    express.json()(req, res, next);
-  }
-});
 // Stripe WebHook chould be called Before bodyParser
 
 app.post(
